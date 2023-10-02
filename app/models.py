@@ -39,7 +39,12 @@ class HeroPower(db.Model):
     # Establish the many-to-one relationships
     hero = db.relationship('Hero', back_populates='powers')
     power = db.relationship('Power', back_populates='heroes')
-
+    @validates('strength')
+    def validate_strength(self, key, value):
+        valid_strengths = ['Strong', 'Weak', 'Average']
+        if value not in valid_strengths:
+            raise ValueError('Invalid strength value. Must be one of: Strong, Weak, Average')
+        return value
 
 class Power(db.Model):
     __tablename__ = 'powers'
@@ -52,3 +57,11 @@ class Power(db.Model):
 
     # Define a one-to-many relationship with HeroPower
     heroes = db.relationship('HeroPower', back_populates='power')
+    @validates('description')
+    def validate_description(self, key, value):
+        if not value:
+            raise ValueError('Description is required')
+        if len(value) < 20:
+            raise ValueError('Description must be at least 20 characters long')
+        return value
+     
