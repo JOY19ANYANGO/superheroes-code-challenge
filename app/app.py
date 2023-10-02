@@ -94,9 +94,6 @@ class PowerByID(Resource):
         data = request.get_json()
         if power:
             for attr in data:
-                 if len(data) < 20:
-                    return make_response(jsonify({ "errors": ["validation errors"]}), 400)
-                 else:
                    setattr(power, attr, data[attr])
             
             db.session.add(power)
