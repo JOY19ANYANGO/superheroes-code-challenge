@@ -94,7 +94,10 @@ class PowerByID(Resource):
         data = request.get_json()
         if power:
             for attr in data:
-                setattr(power, attr, data[attr])
+                 if len(data) < 20:
+                    return make_response(jsonify({ "errors": ["validation errors"]}), 400)
+                 else:
+                   setattr(power, attr, data[attr])
             
             db.session.add(power)
             db.session.commit()
@@ -116,14 +119,14 @@ class HeroPowers(Resource):
        # Validate that the required fields are present in the request
         required_fields = ["strength", "power_id", "hero_id"]
         if not all(key in data for key in required_fields):
-            return make_response(jsonify({"errors": ["Validation errors. Include all required keys"]}), 400)
+            return make_response(jsonify({"errors": ["Validation errors"]}), 400)
 
         # Check if the Hero and Power exist
         hero = Hero.query.get(data['hero_id'])
         power = Power.query.get(data['power_id'])
 
         if not hero or not power:
-            return make_response(jsonify({"errors": ["Validation errors. Hero and/or Power not found"]}), 400)
+            return make_response(jsonify({"errors": ["Validation errors"]}), 400)
 
         # Create a new HeroPower
         hero_power = HeroPower(
