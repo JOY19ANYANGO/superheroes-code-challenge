@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
 
-
+import os
 from flask import Flask, jsonify, request, make_response
 from flask_migrate import Migrate
 from flask_restful import Api, Resource
 from werkzeug.exceptions import NotFound
 
 from models import db,Hero,Power,HeroPower
+from dotenv import load_dotenv
+load_dotenv()
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URI')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.json.compact = False
 
@@ -30,7 +32,7 @@ class Home(Resource):
 api.add_resource(Home, '/')
 
 class Heroes(Resource):
-# get all restaurants 
+# get all restaurants
     def get(self):
         heroes = []
         for hero  in Hero.query.all():
